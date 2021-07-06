@@ -1,0 +1,420 @@
+﻿@{
+    ViewBag.Title = "Contact List";
+}
+<style>
+    .errorColor {
+        color: #c53030;
+        font-weight: 500 !important;
+    }
+</style>
+<div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><b>Contact List</b></h3>
+                    <div style="padding-bottom:5px;text-align:right;">
+                        <a class="btn btn-info" id="AddorEditItem"><i class="fas fa-plus mr-1"></i> ADD Contact</a>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table id="tblManageStudent" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th hidden>ID</th>
+                                <th>FirstName</th>
+                                <th>MiddleName</th>
+                                <th>LastName</th>
+                                <th>Email</th>
+                                <th>PhoneNumber</th>
+                                <th>Status</th>
+                                <th style="text-align: center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="tag">
+                        <ul class="pagination pagination-sm" id="tblManageStudent_Pagination"></ul>
+                        <input type="hidden" id="hfCurrentPageIndex" name="currentPageIndex" />
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="category_modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Contact</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body col-md-12" style="padding-bottom:0px;">
+                <div class="card card-info">
+                    <form class="form-horizontal">
+                        <div class="card-body">
+
+                            <div class="form-group row" hidden>
+                                <input type="text" class="form-control" id="ID" disabled>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">First Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="first_name" placeholder="Enter First Name">
+                                    <label class="errorColor" id="error_first_name"> Enter First Name </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Middle Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="middle_name" placeholder="Enter Middle Name">
+                                    <label class="errorColor" id="error_middle_name"> Enter Middle Name </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Last Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="last_name" placeholder="Enter Last Name">
+                                    <label class="errorColor" id="error_last_name"> Enter Last Name </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email_id" placeholder="Email">
+                                    <label class="errorColor" id="error_email_id"> Enter Email Name </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Phone Number</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="phone_number" placeholder="Enter Phone Number">
+                                    <label class="errorColor" id="error_phone_number"> Enter Phone Number </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label">Status</label>
+                                <div class="col-sm-9">
+                                    <input type="radio" class="rdo_StatusClass" id="rdo_Active" value="Active" name="rdo_status" /> <label style="padding-left:1%">Active</label>
+                                    <input type="radio" class="rdo_StatusClass" id="rdo_InActive" value="InActive" name="rdo_status" /><label style="padding-left:1%">InActive</label>
+                                    <label class="errorColor" id="error_rdo_StatusClass"> Select Status </label>
+                                 </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <!-- /.card-footer -->
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn_modal_submit">Add</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section Scripts {
+ 
+    <script type="text/javascript">
+
+        function ValidateAllEmptyConditonForText(inputControl) {
+            if (inputControl == "" || inputControl == undefined || inputControl == null || inputControl == '') {
+                return true
+            }
+            else {
+                return false;
+            }
+        }
+        //CONTACT LIST START
+        function iterateRows(item, index) {
+            debugger;
+            let status = 'InActive';
+            if (item.Status) {
+                status = 'Active';
+            }
+            $("#tblManageStudent tbody").append(
+                `      <tr>` +
+                `      <td hidden>${item.ID}"</td>` +
+                `      <td id="GridFirstName_${item.ID}">${item.FirstName}</td>` +
+                `      <td id="GridMiddleName_${item.ID}">${item.MiddleName}</td>` +
+                `      <td id="GridLastName_${item.ID}">${item.LastName}</td>` +
+                `      <td id="GridEmail_${item.ID}">${item.Email}</td>` +
+                `      <td id="GridPhoneNumber_${item.ID}">${item.PhoneNumber}</td>` +
+                `      <td id="Gridstatus_${item.ID}">${status}</td>` +
+                `      <td class="py-0 align-middle" style="text-align: center">` +
+                `          <div class="btn-group btn-group-sm" style="text-align: center; vertical-align: middle;">` +
+                `              <a  class="btn btn-info" onclick="EditItem(${item.ID})"><i class="fas fa-pencil-alt mr-1"></i>Edit</a>` +
+                `              <a  class="btn btn-danger" onclick="DeleteItem(${item.ID})"><i class="fas fa-pencil-alt mr-1"></i>Delete</a>` +
+                `          </div>` +
+                `      </td>` +
+                `  </tr>`
+            );
+        }
+
+        function FetchContactList() {
+            $.ajax({
+                url: '@Url.Action("List", "Home")',
+                type: "Get",
+                dataType: "JSON",
+                async: false,
+                data: { dd: "GetData" },
+                success: function (data) {
+                    console.log(data);
+                    $("#tblManageStudent tbody").empty();
+                    data.List.forEach(iterateRows);
+                }
+            });
+        }
+        function DeleteItem(id) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Home")',
+                type: "post",
+                dataType: "JSON",
+                async: false,
+                data: { ID: id },
+                success: function (data) {
+                    console.log(data);
+                    debugger;
+                    if (data.status == 1) {
+                        alert(data.result);
+                        $("#tblManageStudent tbody").empty();
+                        FetchContactList();
+                    }
+                    if (data.status == 0) {
+                        alert(data.result);
+                    }
+
+                }
+            });
+        }
+
+        function EditItem(id) {
+            debugger;
+            let firstName = $("#GridFirstName_" + id).text(); 
+            let middleName = $("#GridMiddleName_" + id).text();
+            let lastName = $("#GridLastName_" + id).text();
+            let email = $("#GridEmail_" + id).text();
+            let phoneNumber = $("#GridPhoneNumber_" + id).text();
+            let status = $("#Gridstatus_" + id).text();
+
+            $(".modal-title").text("Update Contact");
+            $(".btn_modal_submit").text("Update Contact");
+            $("#ID").val(id);
+            $("#first_name").val(firstName);
+            $("#middle_name").val(middleName);
+            $("#last_name").val(lastName);
+            $("#email_id").val(email);
+            $("#phone_number").val(phoneNumber);
+            if (status == "Active") {
+                $("input[name=rdo_status][value=Active]").prop('checked', true);
+            } else {
+                $("input[name=rdo_status][value=InActive]").prop('checked', true);
+            }
+            $('#category_modal').modal('show');
+            
+        }
+
+        function UpdateData(id) {
+
+            if (ValidateContact() == true) {
+                let FirstName = $("#first_name").val();
+                let MiddleName = $("#middle_name").val();
+                let LastName = $("#last_name").val();
+                let Email = $("#email_id").val();
+                let PhoneNumber = $("#phone_number").val();
+                let Status = $("#status").val();
+
+                let rdo_status = $('input[name="rdo_status"]:checked').val();
+                if (rdo_status == "Active") {
+                    Status = true;
+                } else {
+                    Status = false;
+                }
+
+                let personContact_VM = {
+                    ID: id,
+                    FirstName: FirstName,
+                    MiddleName: MiddleName,
+                    LastName: LastName,
+                    Email: Email,
+                    PhoneNumber: PhoneNumber,
+                    Status: Status
+                };
+
+
+                $.ajax({
+                    url: '@Url.Action("Edit", "Home")',
+                    type: "post",
+                    dataType: "JSON",
+                    async: false,
+                    data: { personContact_VM: personContact_VM },
+                    success: function (data) {
+                        console.log(data);
+                        debugger;
+                        if (data.status == 1) {
+                            alert(data.result);
+                            $('#category_modal').modal('hide');
+                            $("#tblManageStudent tbody").empty();
+                            FetchContactList();
+                        }
+                        if (data.status == 0) {
+                            alert(data.result);
+                        }
+                    }
+                });
+            }
+        }
+
+        //CONTACT LIST END
+        function ValidateContact() {
+            let isValid = true;
+            let first_name = $("#first_name").val();
+            if (ValidateAllEmptyConditonForText(first_name) == true) {
+                $("#error_first_name").show();
+                isValid = false;
+            } else {
+                $("#error_first_name").hide();
+            }
+
+            let middle_name = $("#middle_name").val();
+            if (ValidateAllEmptyConditonForText(middle_name) == true) {
+                $("#error_middle_name").show();
+                isValid = false;
+            } else {
+                $("#error_middle_name").hide();
+            }
+
+            let last_name = $("#last_name").val();
+            if (ValidateAllEmptyConditonForText(last_name) == true) {
+                $("#error_last_name").show();
+                isValid = false;
+            } else {
+                $("#error_last_name").hide();
+            }
+            let email_id = $("#email_id").val();
+            if (ValidateAllEmptyConditonForText(email_id) == true) {
+                $("#error_email_id").show();
+                isValid = false;
+            } else {
+                $("#error_email_id").hide();
+            }
+
+            let phone_number = $("#phone_number").val();
+            if (ValidateAllEmptyConditonForText(phone_number) == true) {
+                $("#error_phone_number").show();
+                isValid = false;
+            } else {
+                $("#error_phone_number").hide();
+            }
+
+            let Status = $('input[name="rdo_status"]:checked').val();
+
+            if (ValidateAllEmptyConditonForText(Status) == true) {
+                $("#error_rdo_StatusClass").show();
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        function AddContact() {
+
+            if (ValidateContact() == true) {
+
+                let FirstName = $("#first_name").val();
+                let MiddleName = $("#middle_name").val();
+                let LastName = $("#last_name").val();
+                let Email = $("#email_id").val();
+                let PhoneNumber = $("#phone_number").val();
+                let status = $("#status").val();
+
+                let rdo_status = $('input[name="rdo_status"]:checked').val();
+                if (rdo_status == "Active") {
+                    Status = true;
+                } else {
+                    Status = false;
+                }
+
+                let personContact_VM = {
+                    ID: 0,
+                    FirstName: FirstName,
+                    MiddleName: MiddleName,
+                    LastName: LastName,
+                    Email: Email,
+                    PhoneNumber: PhoneNumber,
+                    Status: Status
+                };
+
+
+                $.ajax({
+                    url: '@Url.Action("Add", "Home")',
+                    type: "Post",
+                    dataType: "JSON",
+                    async: false,
+                    data: { personContact_VM: personContact_VM },
+                    success: function (data) {
+                        console.log(data);
+                        debugger;
+                        if (data.status == 1) {
+                            alert("Record Added SuccessFully");
+                            $('#category_modal').modal('hide');
+                            $("#tblManageStudent tbody").empty();
+                            FetchContactList();
+                        }
+                        if (data.status == 0) {
+                            alert("Something went wrong");
+                        }
+                     
+                    }
+                });
+            }
+
+        }
+
+
+        $(function () {
+            $(document).ready(function () {
+                FetchContactList();
+                hideErrorByDefault();
+
+                $('#AddorEditItem').click(function (e) {
+                    $(".modal-title").text("Add Contact");
+                    $(".btn_modal_submit").text("Add Contact");
+                    $('#category_modal').modal('show');
+                });
+
+                //ADD EDIT START
+                function AddorEditItem(item) {
+                    $('#category_modal').modal('show');
+                }
+                //ADD EDIT START
+            });
+
+            function hideErrorByDefault() {
+                $("#error_first_name").hide();
+                $("#error_middle_name").hide();
+                $("#error_last_name").hide();
+                $("#error_email_id").hide();
+                $("#error_phone_number").hide();
+                $("#error_rdo_StatusClass").hide();
+            }
+        });
+
+        $(".btn_modal_submit").on("click", function (event) {
+            debugger;
+            let ID = $("#ID").val();
+            if (ID == 0 || ID == "0" || ID == "") {
+                AddContact();
+           } else {
+                UpdateData(ID);
+           }
+        });
+
+    </script>
+}
+
+
